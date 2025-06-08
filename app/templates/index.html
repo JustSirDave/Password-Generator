@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Password Generator</title>
+    <link rel="stylesheet" href="/app/templates/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Card -->
+        <div class="card card-left">
+            <h1>PASSWORD GENERATOR</h1>
+
+            <label for="length">Password Length</label>
+            <input type="number" id="length" name="length" min="4" max="128" value="8">
+
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="include-uppercase" checked> Uppercase</label>
+                <label><input type="checkbox" id="include-numbers" checked> Numbers</label>
+                <label><input type="checkbox" id="include-symbols" checked> Symbols</label>
+            </div>
+
+            <label for="phrase">Memorable Phrase</label>
+            <input type="text" id="phrase" placeholder="e.g., TrustNo1">
+
+            <label for="movie">Favorite Movie</label>
+            <input type="text" id="movie" placeholder="e.g., Inception">
+
+            <label for="date">Today's Date</label>
+            <input type="text" id="date" placeholder="e.g., 2025-06-08">
+
+            <label for="purpose">Purpose of Pwd</label>
+            <select id="purpose">
+                <option value="">Select</option>
+                <option value="bank">Bank</option>
+                <option value="social">Social</option>
+                <option value="web">Web</option>
+                <option value="lock">Lock</option>
+                <option value="vault">Vault</option>
+            </select>
+
+            <button id="generate-btn">Generate</button>
+        </div>
+
+        <!-- Right Card -->
+        <div class="card card-right">
+            <h2>GENERATED PASSWORD</h2>
+
+            <div id="generated-password" class="output-area">Your password will appear here</div>
+
+            <div id="password-description" class="output-area">
+                Cool description on how the Pwd can be easily remembered
+            </div>
+
+            <div id="additional-info" class="output-area">
+                Any cool thing can go here
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("generate-btn").addEventListener("click", function () {
+            const length = parseInt(document.getElementById("length").value);
+            const includeUppercase = document.getElementById("include-uppercase").checked;
+            const includeNumbers = document.getElementById("include-numbers").checked;
+            const includeSymbols = document.getElementById("include-symbols").checked;
+
+            const phrase = document.getElementById("phrase").value.trim();
+            const movie = document.getElementById("movie").value.trim();
+            const date = document.getElementById("date").value.trim();
+            const purpose = document.getElementById("purpose").value;
+
+            // Build base string from user inputs
+            let base = `${phrase}${movie}${date}${purpose}`;
+            base = base.replace(/\s+/g, '');
+
+            let characters = base.toLowerCase();
+
+            if (includeUppercase) {
+                characters += base.toUpperCase();
+            }
+            if (includeNumbers) {
+                characters += '0123456789';
+            }
+            if (includeSymbols) {
+                characters += '!@#$%^&*()_+[]{}|;:,.<>?';
+            }
+
+            if (!characters || characters.length === 0) {
+                alert("Please provide some input or enable at least one character type.");
+                return;
+            }
+
+            let password = '';
+            for (let i = 0; i < length; i++) {
+                const randIndex = Math.floor(Math.random() * characters.length);
+                password += characters[randIndex];
+            }
+
+            // Show password
+            document.getElementById("generated-password").innerText = password;
+
+            // Generate simple description
+            let desc = `Built using "${phrase}", "${movie}", and "${date}".`;
+            if (includeUppercase) desc += " Includes uppercase letters.";
+            if (includeNumbers) desc += " Includes numbers.";
+            if (includeSymbols) desc += " Includes symbols.";
+
+            document.getElementById("password-description").innerText = desc;
+
+            // Extra info section (can be modified or expanded later)
+            document.getElementById("additional-info").innerText = `Generated for: ${purpose || "General Use"}`;
+        });
+</script>
+
+</body>
+</html>
